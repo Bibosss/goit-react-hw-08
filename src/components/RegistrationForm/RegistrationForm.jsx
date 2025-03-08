@@ -19,7 +19,7 @@ export const RegistrationForm = () => {
         console.log(values);
         dispatch(register(values))
             .unwrap()
-            .then(() => navigate("/", {replace: true}))
+            .then(() => navigate("/contacts", {replace: true}))
             .catch(() => console.log("Invalid data"))
         options.resetForm();
     }
