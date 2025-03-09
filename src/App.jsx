@@ -9,8 +9,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Suspense, useEffect } from 'react'
 import { refreshUser } from './redux/auth/operations'
 import { selectIsRefreshing } from './redux/auth/selectors'
-import PrivateRoute from './components/PrivateRoute'
-import RestrictedRoute from './components/RestrictedRoute'
+import PrivateRoute from './PrivateRoute'
+import RestrictedRoute from './RestrictedRoute'
 
 
 const App = () => {
@@ -21,20 +21,22 @@ const App = () => {
     dispatch(refreshUser())
   }, [dispatch])
 
-  return isRefreshing ? null : (
+  return isRefreshing ? (
+    <b>Refreshing user...</b>
+  ) : (
     <Layout>
       <Suspense fallback={null}>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path='contacts'
-          element={
-            <PrivateRoute component={<ContactsPage />} redirectTo="/login" />
-          }
-        />
-        <Route path='/register' element={<RestrictedRoute component={<RegistrationPage />} redirectTo="/contacts" />} />
-        <Route path='/login' element={<RestrictedRoute component={<LoginPage />} redirectTo="/contacts" />} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path='contacts'
+            element={
+              <PrivateRoute component={<ContactsPage />} redirectTo="/login" />
+            }
+          />
+          <Route path='/register' element={<RestrictedRoute component={<RegistrationPage />} redirectTo="/contacts" />} />
+          <Route path='/login' element={<RestrictedRoute component={<LoginPage />} redirectTo="/contacts" />} />
         </Routes>
-        </Suspense>
+      </Suspense>
     </Layout>
   );
 }
