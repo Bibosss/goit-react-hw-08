@@ -14,7 +14,7 @@ const Contact = ({ name, number, id }) => {
         <div className={css.contactCard}>
             <p>{name}</p>
             <p>{number}</p>
-            <button onClick={handleDelete}>Delete</button>
+            <button className={css.contactBut} onClick={handleDelete}>Delete</button>
         </div>
     )
 }

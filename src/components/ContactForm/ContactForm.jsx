@@ -4,14 +4,15 @@ import css from "./ContactForm.module.css"
 
 import { ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { ToastContainer } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
 import { addContact } from "../../redux/contacts/operations";
+import { selectContacts } from "../../redux/contacts/selectors";
 
 const ContactForm = () => {
     const FeedbackSchema = Yup.object().shape({
         username: Yup.string().min(3, "Too Short!").max(50, "Too Long!").required("Required"),
-        tel: Yup.string().matches(/^\d{3}-\d{2}-\d{2}$/, "Invalid format (e.g., 111-11-11)").min(3, "Too Short!").max(50, "Too Long!").required("Required"),
+        tel: Yup.string().matches(/^[+\d\s\-()]{3,20}$/, "Invalid phone number format").required("Required"),
     });
 
     const dispatch = useDispatch();
@@ -24,10 +25,18 @@ const ContactForm = () => {
         tel: "",
     };
 
+    const contacts = useSelector(selectContacts);
+
     const handleAdd = (values, actions) => {
+        const isDublicate = contacts.some(contact => contact.number === values.number)
         console.log(values);
-        dispatch(addContact({ name: values.username, number: values.tel }))
-        actions.resetForm();
+        if (isDublicate) {
+            toast.error("This number is already in use!");
+        } else {
+            dispatch(addContact({ name: values.username, number: values.tel }));
+            toast.success("Contact added successfully!");
+            actions.resetForm();
+        }
     }
 
     return (
